@@ -1,0 +1,9 @@
+/.idea
+/.babel
+/bower_components/*
+/node_modules/*
+/app-build
+/app-release
+/app-test
+npm-debug.log
+/yarn.lock
