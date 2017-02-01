@@ -18,7 +18,7 @@ const DEFAULT_OPTIONS = {
 
 var port = DEFAULT_OPTIONS.port;
 var unminify = process.env.UNMINIFIED || 'false';
-var publicPath = process.env.PUBLIC_PATH || `http://localhost:${port}/`;
+var publicPath = process.env.PUBLIC_PATH || ('http://localhost:'+port+'/');
 var outputDir = process.env.MODE === 'release' ? DEFAULT_OPTIONS.releaseDir : DEFAULT_OPTIONS.buildDir;
 
 var plugins = [
