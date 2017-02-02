@@ -8,10 +8,10 @@
     "install-globals": "npm install --global cross-env http-server",
     "build": "cross-env UV_THREADPOOL_SIZE=128 webpack --progress",
     "build-unminified": "cross-env UV_THREADPOOL_SIZE=128 UNMINIFIED=true webpack --progress",
-    "watch": "cross-env UV_THREADPOOL_SIZE=128 webpack --watch",
-    "watch-unminified": "cross-env UV_THREADPOOL_SIZE=128 UNMINIFIED=true webpack --watch --progress",
+    "watch": "cross-env UV_THREADPOOL_SIZE=128 LINT=false webpack-dev-server --watch  --bail",
+    "watch-unminified": "cross-env UV_THREADPOOL_SIZE=128 UNMINIFIED=true LINT=false webpack-dev-server --watch --progress  --bail",
     "release": "cross-env UV_THREADPOOL_SIZE=128 MODE=release webpack --progress",
-    "release-live": "cross-env UV_THREADPOOL_SIZE=128 MODE=release PUBLIC_PATH='//west.cdn.mathletics.com/html/login/' webpack --progress",
+    "release-live": "cross-env UV_THREADPOOL_SIZE=128 MODE=release PUBLIC_PATH='//west.cdn.mathletics.com/html/<%= appName %>/' webpack --progress",
     "ci": "cross-env UV_THREADPOOL_SIZE=128 NAMES=release* MODE=release webpack"
   },
   "author": "<%= authorName %>",
@@ -59,8 +59,10 @@
     "resolve-url-loader": "~1.4.3",
     "sass-loader": "~3.1.2",
     "style-loader": "0.12.3",
+    "stylelint-webpack-plugin": "^0.5.1",
     "url-loader": "~0.5.7",
-    "webpack": "~1.12.12"
+    "webpack": "^1.13.2",
+    "webpack-fail-plugin": "1.0.5"
   },
   "optionalDependencies": {
     "fsevents": "1.0.0"

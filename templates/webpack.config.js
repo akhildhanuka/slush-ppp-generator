@@ -4,8 +4,10 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ESManglePlugin = require('esmangle-webpack-plugin');
 var CleanPlugin = require('clean-webpack-plugin');
+var FailPlugin = require('webpack-fail-plugin');
 var OrderAndHashPlugin = require('./order-and-hash-plugin');
 var htmlTemplateContent = require('./html-template-content');
+var StyleLintPlugin = require('stylelint-webpack-plugin');
 
 const DEFAULT_OPTIONS = {
     appDir    : './app',
@@ -18,7 +20,8 @@ const DEFAULT_OPTIONS = {
 
 var port = DEFAULT_OPTIONS.port;
 var unminify = process.env.UNMINIFIED || 'false';
-var publicPath = process.env.PUBLIC_PATH || ('http://localhost:'+port+'/');
+var linting = process.env.LINT || 'false';
+var publicPath = process.env.PUBLIC_PATH || ('http://localhost:' + port + '/');
 var outputDir = process.env.MODE === 'release' ? DEFAULT_OPTIONS.releaseDir : DEFAULT_OPTIONS.buildDir;
 
 var plugins = [
@@ -36,6 +39,7 @@ var plugins = [
     }),
     new webpack.optimize.CommonsChunkPlugin('vendor', 'js/vendor-[hash].js'),
     new ExtractTextPlugin('css/[name]-[id]-[contenthash].css'),
+
     new ExtractTextPlugin('indexhtml.html'),
     new HtmlWebpackPlugin({
         filename       : 'index.html',
@@ -43,9 +47,15 @@ var plugins = [
         templateContent: htmlTemplateContent('indexhtml', false), // custom html template with support for inject tag
         minify         : false,
         inject         : false
-    })
+    }),
+    FailPlugin
 ];
-
+if (linting === 'true') {
+    plugins.push(new StyleLintPlugin({
+        failOnError: true,
+        syntax     : 'scss'
+    }));
+}
 if (unminify == 'false') {
     plugins.push(new ESManglePlugin({
         exclude: /(test|indexhtml).\w+.js$/i  // breakage occurs if we don't exclude entry points for index.html, test
@@ -91,7 +101,22 @@ module.exports = {
         ]
     },
     module       : {
-        loaders: [
+        preLoaders: [
+            //{
+            //    test  : /\.css$/,
+            //    loader: 'csslint'
+            //},
+            {
+                test   : /\.js$/i,
+                loader : "jshint-loader",
+                exclude: /node_modules|bower_components/
+            }
+        ],
+        jshint    : {
+            emitErrors: true,
+            failOnHint: true,
+        },
+        loaders   : [
             {
                 test   : /\angular.js$/i,
                 include: /bower_components\/angular/i,
