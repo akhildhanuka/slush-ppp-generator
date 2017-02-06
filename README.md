@@ -1,4 +1,4 @@
-# Slush Slush-ppp-generator [![Build Status](https://secure.travis-ci.org/akhildhanuka/slush-ppp-generator.png?branch=master)](https://travis-ci.org/akhildhanuka/slush-ppp-generator) [![NPM version](https://badge-me.herokuapp.com/api/npm/slush-ppp-generator.png)](http://badges.enytc.com/for/npm/slush-ppp-generator)
+# Slush ppp-generator [![Build Status](https://secure.travis-ci.org/akhildhanuka/slush-ppp-generator.png?branch=master)](https://travis-ci.org/akhildhanuka/slush-ppp-generator) [![NPM version](https://badge-me.herokuapp.com/api/npm/slush-ppp-generator.png)](http://badges.enytc.com/for/npm/slush-ppp-generator)
 
 > 
 
@@ -22,7 +22,7 @@ $ mkdir my-slush-ppp-generator
 Run the generator from within the new folder:
 
 ```bash
-$ cd my-slush-ppp-generator && slush slush-ppp-generator
+$ cd my-slush-ppp-generator && slush ppp-generator
 ```
 
 ## Getting To Know Slush
