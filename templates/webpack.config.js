@@ -1,34 +1,33 @@
-var path = require('path');
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ESManglePlugin = require('esmangle-webpack-plugin');
-var CleanPlugin = require('clean-webpack-plugin');
-var FailPlugin = require('webpack-fail-plugin');
-var OrderAndHashPlugin = require('./order-and-hash-plugin');
-var htmlTemplateContent = require('./html-template-content');
-var StyleLintPlugin = require('stylelint-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ESManglePlugin = require('esmangle-webpack-plugin');
+const CleanPlugin = require('clean-webpack-plugin');
+const FailPlugin = require('webpack-fail-plugin');
+const OrderAndHashPlugin = require('./order-and-hash-plugin');
+const htmlTemplateContent = require('./html-template-content');
+const StyleLintPlugin = require('stylelint-webpack-plugin');
 
+const PORT = process.env.PORT || 55555;
 const DEFAULT_OPTIONS = {
     appDir    : './app',
     buildDir  : './app-build',
     testDir   : './app-test',
     releaseDir: './app-release',
-    port      : 55555,
-    names     : 'app*, release',
+    port      : PORT,
+    names     : 'app*, release'
 };
-
-var port = DEFAULT_OPTIONS.port;
-var unminify = process.env.UNMINIFIED || 'false';
-var linting = process.env.LINT || 'false';
-var publicPath = process.env.PUBLIC_PATH || ('http://localhost:' + port + '/');
-var outputDir = process.env.MODE === 'release' ? DEFAULT_OPTIONS.releaseDir : DEFAULT_OPTIONS.buildDir;
+const unminify = process.env.UNMINIFIED || 'false';
+const linting = process.env.LINT || 'false';
+const publicPath = process.env.PUBLIC_PATH || ('http://localhost:' + PORT + '/');
+const outputDir = process.env.MODE === 'release' ? DEFAULT_OPTIONS.releaseDir : DEFAULT_OPTIONS.buildDir;
 
 var plugins = [
     new CleanPlugin([outputDir], {root: process.cwd(), verbose: false}),
     new webpack.DefinePlugin({
         BUILD_VERSION            : process.env.BUILD_VERSION || JSON.stringify('development'),
-        DEFINE_LOGGING_IS_ENABLED: process.env.LOGGING_IS_ENABLED || '"false"'
+        DEFINE_LOGGING_IS_ENABLED: process.env.LOGGING_IS_ENABLED || 'false'
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
@@ -73,32 +72,53 @@ module.exports = {
             path.join(__dirname, './app/index.scss')
         ],
         'indexhtml': [
-            path.join(__dirname, './app/index.html'),
+            path.join(__dirname, './app/index.html')
         ]
     },
     devtool      : 'source-map',
     output       : {
         path         : outputDir,
         filename     : '[name]-[chunkhash].js',
-        chunkFilename: "[name].[chunkhash].js",
+        chunkFilename: '[name].[chunkhash].js',
         publicPath   : publicPath
     },
     devServer    : {
-        stats: 'minimal',
-        port : port
+        // https://webpack.js.org/configuration/stats
+        stats: {
+            hash        : true,
+            version     : true,
+            timings     : true,
+            assets      : false,
+            chunks      : false,
+            modules     : false,
+            reasons     : false,
+            children    : false,
+            source      : false,
+            errors      : true,
+            errorDetails: true,
+            warnings    : true,
+            publicPath  : false
+        },
+        port : PORT
     },
     plugins      : plugins,
     resolve      : {
         extensions        : ['', '.js'],
         modulesDirectories: [
-            "node_modules",
-            "bower_components"
+            'node_modules',
+            'bower_components'
         ]
     },
     resolveLoader: {
         modulesDirectories: [
-            "node_modules"
+            'node_modules',
+            'bower_components'
         ]
+    },
+    // https://github.com/webpack-contrib/jshint-loader
+    jshint    : {
+        emitErrors: true,
+        failOnHint: false,
     },
     module       : {
         preLoaders: [
@@ -108,24 +128,20 @@ module.exports = {
             //},
             {
                 test   : /\.js$/i,
-                loader : "jshint-loader",
-                exclude: /node_modules|bower_components/
+                loader : 'jshint-loader',
+                exclude: /node_modules/
             }
         ],
-        jshint    : {
-            emitErrors: true,
-            failOnHint: true,
-        },
         loaders   : [
             {
                 test   : /\angular.js$/i,
-                include: /bower_components\/angular/i,
+                include: /node_modules\/angular/i,
                 loader : 'exports-loader?angular'
             },
 
             {
                 test  : /\.json$/,
-                loader: "json-loader"
+                loader: 'json-loader'
             },
             {
                 test  : /index\.html$/,
@@ -133,19 +149,19 @@ module.exports = {
             },
             {
                 test  : /\.scss$/,
-                loader: ExtractTextPlugin.extract("style-loader", "!css-loader?minimize&sourceMap!resolve-url-loader?sourceMap!sass-loader?sourceMap")
+                loader: ExtractTextPlugin.extract('style-loader', '!css-loader?minimize&sourceMap!resolve-url-loader?sourceMap!sass-loader?sourceMap')
             },
             {
                 test  : /\.css$/,
-                loader: ExtractTextPlugin.extract("style-loader", "!css-loader?minimize&sourceMap!resolve-url-loader?sourceMap")
+                loader: ExtractTextPlugin.extract('style-loader', '!css-loader?minimize&sourceMap!resolve-url-loader?sourceMap')
             },
             {
                 test  : /\.(ico|gif|jpg|jpeg|png|svg)$/,
-                loader: "file-loader?name=[md5:hash:hex:20].[ext]!image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false"
+                loader: 'file-loader?name=[md5:hash:hex:20].[ext]!image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
             },
             {
                 test  : /\.(eot|ttf|otf)([#?].*)?$/i,
-                loader: "file-loader?name=[md5:hash:hex:20].[ext]"
+                loader: 'file-loader?name=[md5:hash:hex:20].[ext]'
             },
             {
                 test  : /\.woff2?([#?].*)?$/i,
