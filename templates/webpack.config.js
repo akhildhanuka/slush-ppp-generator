@@ -47,6 +47,7 @@ var plugins = [
         minify         : false,
         inject         : false
     }),
+    new webpack.optimize.DedupePlugin,
     FailPlugin
 ];
 if (linting === 'true') {
