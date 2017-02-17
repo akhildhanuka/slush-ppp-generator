@@ -20,7 +20,7 @@ const DEFAULT_OPTIONS = {
 };
 const unminify = process.env.UNMINIFIED || 'false';
 const linting = process.env.LINT || 'false';
-const publicPath = process.env.PUBLIC_PATH || ('http://localhost:' + PORT + '/');
+const publicPath = process.env.PUBLIC_PATH || process.env.publicPath || ('http://localhost:' + PORT + '/');
 const outputDir = process.env.MODE === 'release' ? DEFAULT_OPTIONS.releaseDir : DEFAULT_OPTIONS.buildDir;
 
 var plugins = [
@@ -36,8 +36,8 @@ var plugins = [
         $              : 'jquery',
         'window.jQuery': 'jquery'
     }),
-    new webpack.optimize.CommonsChunkPlugin('vendor', 'js/vendor-[hash].js'),
-    new ExtractTextPlugin('css/[name]-[id]-[contenthash].css'),
+    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor-[hash].js'),
+    new ExtractTextPlugin('[name]-[id]-[contenthash].css'),
 
     new ExtractTextPlugin('indexhtml.html'),
     new HtmlWebpackPlugin({
@@ -117,7 +117,7 @@ module.exports = {
         ]
     },
     // https://github.com/webpack-contrib/jshint-loader
-    jshint    : {
+    jshint       : {
         emitErrors: true,
         failOnHint: false,
     },
